@@ -5,7 +5,8 @@ sets of features. The train_and_evaluate_models function helps with testing mult
 with built-in cross validation.
 """
 from sklearn.model_selection import cross_val_score, KFold, train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 
 def train_and_evaluate_data(features, output, model):
     """
@@ -66,25 +67,42 @@ def train_and_evaluate_model(model, model_name, x_train, y_train, x_test, y_test
         num_folds: An integer representing the number of folds for cross-validation. Default is 5.
 
     Returns:
-        None: The function prints cross-validation scores, mean accuracy, standard deviation, and
-        test accuracy.
+        None: The function prints cross-validation scores (accuracy, precision, recall, and F1 score),
+        mean scores, and standard deviations. It also prints the test accuracy, precision, recall, and F1 score.
     """
     # Create a cross-validation object
     k_fold = KFold(n_splits=num_folds, shuffle=True, random_state=42)
 
-    # Perform cross-validation
-    cv_scores = cross_val_score(model, x_train, y_train, cv=k_fold)
+    # Perform cross-validation for accuracy
+    cv_accuracy_scores = cross_val_score(model, x_train, y_train, cv=k_fold)
 
-    # Print the cross-validation scores
-    print(f"{model_name} Cross-Validation Scores:", cv_scores)
+    # Perform cross-validation for precision
+    cv_precision_scores = cross_val_score(model, x_train, y_train, cv=k_fold, scoring='precision')
 
-    # Print the mean and standard deviation of the scores
-    print(f"{model_name} Mean Accuracy: {cv_scores.mean():.4f}")
-    print(f"{model_name} Standard Deviation: {cv_scores.std():.4f}")
+    # Perform cross-validation for recall
+    cv_recall_scores = cross_val_score(model, x_train, y_train, cv=k_fold, scoring='recall')
+
+    # Perform cross-validation for F1 score
+    cv_f1_scores = cross_val_score(model, x_train, y_train, cv=k_fold, scoring='f1')
 
     # Train the model on the entire training set
     model.fit(x_train, y_train)
 
     # Evaluate the model on the test set
     test_accuracy = model.score(x_test, y_test)
-    print(f"{model_name} Test Accuracy: {test_accuracy:.4f}")
+    test_precision = precision_score(model.predict(x_test), y_test)
+    test_recall = recall_score(model.predict(x_test), y_test)
+    test_f1 = f1_score(model.predict(x_test), y_test)
+
+    evaluation_metrics = {
+        "Mean Accuracy": cv_accuracy_scores.mean(),
+        "Mean Precision": cv_precision_scores.mean(),
+        "Mean Recall": cv_recall_scores.mean(),
+        "Mean F1 Score": cv_f1_scores.mean(),
+        "Test Accuracy": test_accuracy,
+        "Test Precision": test_precision,
+        "Test Recall": test_recall,
+        "Test F1 Score": test_f1,
+    }
+
+    return evaluation_metrics
