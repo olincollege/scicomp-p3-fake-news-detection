@@ -5,7 +5,7 @@ sets of features. The train_and_evaluate_models function helps with testing mult
 with built-in cross validation.
 """
 from sklearn.model_selection import cross_val_score, KFold, train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
 def train_and_evaluate_data(features, output, model):
     """
@@ -38,16 +38,19 @@ def train_and_evaluate_data(features, output, model):
     # Make predictions on the test set
     predictions = model.predict(x_test)
 
-    # Evaluate the model
     accuracy = accuracy_score(y_test, predictions)
     precision = precision_score(y_test, predictions)
     recall = recall_score(y_test, predictions)
     f1_value = f1_score(y_test, predictions)
 
-    print(f"Model Accuracy: {accuracy}")
-    print(f"Precision: {precision}")
-    print(f"Recall: {recall}")
-    print(f"F1 Score: {f1_value}")
+    evaluation_metrics = {
+        "Accuracy": accuracy,
+        "Precision": precision,
+        "Recall": recall,
+        "F1 Score": f1_value,
+    }
+
+    return evaluation_metrics
 
 def train_and_evaluate_model(model, model_name, x_train, y_train, x_test, y_test, num_folds=5):
     """
