@@ -53,7 +53,7 @@ def train_and_evaluate_data(features, output, model):
 
     return evaluation_metrics
 
-def train_and_evaluate_model(model, model_name, x_train, y_train, x_test, y_test, num_folds=5):
+def train_and_evaluate_model(model, x_train, y_train, x_test, y_test, num_folds=5):
     """
     Train and evaluate a machine learning model using cross-validation and a separate test set.
 
