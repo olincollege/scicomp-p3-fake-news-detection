@@ -7,7 +7,6 @@ with built-in cross validation.
 from sklearn.model_selection import cross_val_score, KFold, train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-
 def train_and_evaluate_data(features, output, model):
     """
     Train and evaluate a machine learning model using the provided features and output. Primarily
@@ -19,9 +18,8 @@ def train_and_evaluate_data(features, output, model):
         model: An instance of a scikit-learn compatible machine learning model.
 
     Returns:
-        N/A
-        The function prints the evaluation metrics, including accuracy, precision, recall, and F1
-        score.
+        evaluation_metrics: A list containing the accuracy, precision, recall, and F1 score of the
+        model.
     """
     # Split the data into training and testing sets
     x_train, x_test, y_train, y_test = train_test_split(
@@ -39,6 +37,7 @@ def train_and_evaluate_data(features, output, model):
     # Make predictions on the test set
     predictions = model.predict(x_test)
 
+    # Calculate performance metrics for test set
     accuracy = accuracy_score(y_test, predictions)
     precision = precision_score(y_test, predictions)
     recall = recall_score(y_test, predictions)
@@ -67,8 +66,8 @@ def train_and_evaluate_model(model, x_train, y_train, x_test, y_test, num_folds=
         num_folds: An integer representing the number of folds for cross-validation. Default is 5.
 
     Returns:
-        None: The function prints cross-validation scores (accuracy, precision, recall, and F1 score),
-        mean scores, and standard deviations. It also prints the test accuracy, precision, recall, and F1 score.
+        evaluation_metrics: A list containing the accuracy, precision, recall, and F1 score of the
+        model. Returns these statistics for the cross-validation means and test dataset.
     """
     # Create a cross-validation object
     k_fold = KFold(n_splits=num_folds, shuffle=True, random_state=42)
@@ -88,7 +87,7 @@ def train_and_evaluate_model(model, x_train, y_train, x_test, y_test, num_folds=
     # Train the model on the entire training set
     model.fit(x_train, y_train)
 
-    # Evaluate the model on the test set
+    # Calculate performance metrics for test set
     test_accuracy = model.score(x_test, y_test)
     test_precision = precision_score(model.predict(x_test), y_test)
     test_recall = recall_score(model.predict(x_test), y_test)
